@@ -71,7 +71,7 @@ class LogisticClassifier(nn.Module):
 
         return y_pred
 
-model = LogisticClassifier(args.dimensions,
+model = LogisticClassifier(args.dimension,
                            args.num_hidden_units,
                            args.num_classes)
 print(model)
@@ -130,9 +130,9 @@ def plot_multiclass_decision_boundary(model, X, y):
     # 预测坐标点
     y_pred = model(X_test, apply_softmax=True)
     _, y_pred = y_pred.max(dim=1)
-    y_pred = y_pred.shape(xx.shape)
-    plt.contourrf*(xx, yy, y_pred, cmap=cmap, alpha=0.8)
-    plt.scatter(X[:, 0], X[:, 1], c=y, s=40, camp=plt.cm.RdYlBu)
+    y_pred = y_pred.reshape(xx.shape)
+    plt.contourf(xx, yy, y_pred, cmap=cmap, alpha=0.8)
+    plt.scatter(X[:, 0], X[:, 1], c=y, s=40, cmap=plt.cm.RdYlBu)
     plt.xlim(xx.min(), xx.max())
     plt.ylim(yy.min(), yy.max())
 
@@ -190,7 +190,7 @@ class MLP(nn.Module):
             y_pred = F.softmax(y_pred, dim=1)
         return y_pred
 # 初始化
-model = MLP(input_dim=args.dimensions,
+model = MLP(input_dim=args.dimension,
             hidden_dim=args.num_hidden_units,
             output_dim=args.num_classes)
 print(model)
@@ -205,7 +205,7 @@ model.train() # 设置为训练模式
 for epoch in range(args.num_epochs):
     y_pred = model(X_train)
     _, predictions = y_pred.max(dim=1)
-    accuracy = get_accuracy(predictions.long())
+    accuracy = get_accuracy(predictions.long(), y_target=y_train)
     loss = loss_fn(y_pred, y_train)
     if epoch % 20 == 0:
         print(f"epoch:{epoch:02d} | loss:{loss.item():.4f} | acc:{accuracy*100:.1f}%")
